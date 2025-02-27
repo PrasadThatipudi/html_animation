@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Script</title>
+    <style>
+      body {
+        position: relative;
+        background-color: black;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const debug = function (arg) {
+        console.log(arg);
+        return arg;
+      };
+
+      const createBox = (top, left) => {
+        const dot = document.createElement("div");
+        dot.style.backgroundColor = "red";
+        dot.style.width = "10px";
+        dot.style.aspectRatio = "1";
+        dot.style.position = "absolute";
+        dot.style.top = `${top}px`;
+        dot.style.left = `${left}px`;
+
+        return dot;
+      };
+
+      const move = (direction, steps, currentPos) => {
+        currentPos[direction] += steps;
+        return currentPos;
+      };
+
+      const replaceBox = (box, position) => {
+        const [left, top] = position;
+
+        box.style.left = `${left}px`;
+        box.style.top = `${top}px`;
+      };
+
+      const randomInt = (from, to) =>
+        Math.floor(Math.random() * Math.abs(to - from) + from);
+
+      const animateBox = (box, steps, initialPos) => {
+        let newPos = [...initialPos];
+
+        const intervalId = setInterval(() => {
+          const direction = 1;
+          newPos = move(direction, steps(), initialPos);
+          replaceBox(box, newPos);
+        }, 16);
+      };
+
+      const goWithTheFlow = (a, b) => () => randomInt(a, b);
+      const consistency = (step) => () => step;
+
+      const animateBoxes = () => {
+        const initialLefts = Array.from(
+          { length: 200 },
+          (_, index) => index * 10
+        );
+
+        const zigZagFun = zigZag(10);
+
+        initialLefts.map((left) => {
+          const initialPos = [left, 100];
+          const dot = createBox(100, left);
+          document.body.appendChild(dot);
+          // animateBox(dot, goWithTheFlow(10, 100), initialPos);
+          // animateBox(dot, consistency(20), initialPos);
+          // animateBox(dot,, initialPos);
+        });
+      };
+      animateBoxes();
+    </script>
+  </body>
+</html>
