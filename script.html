@@ -16,14 +16,26 @@
         return arg;
       };
 
-      const createBox = (top, left) => {
+      const addStyle = (node, styles) => {
+        Object.keys(styles).forEach((property) => {
+          node.style[property] = styles[property];
+        });
+      };
+
+      const createBox = (top, left, rgb) => {
         const dot = document.createElement("div");
-        dot.style.backgroundColor = "red";
-        dot.style.width = "10px";
-        dot.style.aspectRatio = "1";
-        dot.style.position = "absolute";
-        dot.style.top = `${top}px`;
-        dot.style.left = `${left}px`;
+        const styleForDot = {
+          backgroundColor: `rgb(${rgb.join(",")})`,
+          borderRadius: "10%",
+
+          width: "10px",
+          aspectRatio: "1",
+          position: "absolute",
+          top: `${top}px`,
+          left: `${left}px`,
+        };
+
+        addStyle(dot, styleForDot);
 
         return dot;
       };
@@ -48,9 +60,15 @@
 
         const intervalId = setInterval(() => {
           const direction = 1;
-          newPos = move(direction, steps(), initialPos);
-          replaceBox(box, newPos);
-        }, 16);
+          [top, left] = move(direction, steps(), initialPos);
+          replaceBox(box, [top, left]);
+
+          if (left > 950) clearInterval(intervalId);
+        }, 55);
+      };
+
+      const randomRgb = (r = [0, 256], g = [0, 256], b = [0, 256]) => {
+        return [randomInt(...r), randomInt(...g), randomInt(...b)];
       };
 
       const goWithTheFlow = (a, b) => () => randomInt(a, b);
@@ -62,15 +80,16 @@
           (_, index) => index * 10
         );
 
-        const zigZagFun = zigZag(10);
-
-        initialLefts.map((left) => {
-          const initialPos = [left, 100];
-          const dot = createBox(100, left);
+        initialLefts.map((left, index) => {
+          const initialPos = [left, 10];
+          const dot = createBox(
+            100,
+            left,
+            randomRgb([100, 256], [0, 256], [255, 256])
+          );
           document.body.appendChild(dot);
-          // animateBox(dot, goWithTheFlow(10, 100), initialPos);
+          animateBox(dot, goWithTheFlow(10, 50), initialPos);
           // animateBox(dot, consistency(20), initialPos);
-          // animateBox(dot,, initialPos);
         });
       };
       animateBoxes();
